@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.16.0)
+
+project(engine)
+
+include_directories(${PROJECT_SOURCE_DIR})
+
+add_subdirectory(vendor/glfw)
+
+file(GLOB source
+	"${PROJECT_SOURCE_DIR}/core/*.cpp"
+	"${PROJECT_SOURCE_DIR}/renderer/*.cpp"
+	"${PROJECT_SOURCE_DIR}/utility/*.cpp"
+	"${PROJECT_SOURCE_DIR}/platform/linux/*.cpp"
+	"${PROJECT_SOURCE_DIR}/platform/opengl/*.cpp"
+	"${PROJECT_SOURCE_DIR}/assets/*.cpp"
+	"${PROJECT_SOURCE_DIR}/entity_component_system/*.cpp"
+	)
+
+add_library(engine STATIC ${source})
+target_link_libraries(engine glfw)
+target_link_libraries(engine GL)
+target_link_libraries(engine SDL_image)
