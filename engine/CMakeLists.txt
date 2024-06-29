@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16.0)
 
+set(CMAKE_BUILD_TYPE Debug)
 project(engine)
 
 include_directories(${PROJECT_SOURCE_DIR})

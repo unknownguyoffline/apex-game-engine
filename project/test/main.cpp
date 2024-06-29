@@ -1,3 +1,4 @@
+#include "editor.hpp"
 #include "engine.hpp"
 #include "renderer/camera.hpp"
 #include "renderer/texture_library.hpp"
@@ -7,9 +8,8 @@
 #include <imgui/imgui.h>
 #include <vector>
 #include <vendor/entt/entt.hpp>
-
 void spriteSystem(const std::vector<Entity> &entities, VertexBuffer *vbo, IndexBuffer *ibo, Shader *shader,
-                  const glm::mat4 &view, const glm::mat4 &proj)
+                  const glm::mat4 &view, const glm::mat4 &proj, TextureLibrary &textureLibrary)
 {
     for (Entity entity : entities)
     {
@@ -30,14 +30,14 @@ void spriteSystem(const std::vector<Entity> &entities, VertexBuffer *vbo, IndexB
         vertex[2].position = glm::vec3(-0.5, -0.5, 0);
         vertex[3].position = glm::vec3(-0.5, 0.5, 0);
 
-        vertex[0].uv = glm::vec2(float(1.0 / sprite.spriteCount.x) * sprite.selectedSprite.x,
-                                 float(1.0 / sprite.spriteCount.y) * float(sprite.selectedSprite.y - 1));
-        vertex[1].uv = glm::vec2(float(1.0 / sprite.spriteCount.x) * sprite.selectedSprite.x,
-                                 float(1.0 / sprite.spriteCount.y) * sprite.selectedSprite.y);
-        vertex[2].uv = glm::vec2(float(1.0 / sprite.spriteCount.x) * float(sprite.selectedSprite.x - 1),
-                                 float(1.0 / sprite.spriteCount.y) * sprite.selectedSprite.y);
-        vertex[3].uv = glm::vec2(float(1.0 / sprite.spriteCount.x) * float(sprite.selectedSprite.x - 1),
-                                 float(1.0 / sprite.spriteCount.y) * float(sprite.selectedSprite.y - 1));
+        vertex[0].uv = glm::vec2(float(1.0 / sprite.spriteCount.x) * sprite.spriteIndex.x,
+                                 float(1.0 / sprite.spriteCount.y) * float(sprite.spriteIndex.y - 1));
+        vertex[1].uv = glm::vec2(float(1.0 / sprite.spriteCount.x) * sprite.spriteIndex.x,
+                                 float(1.0 / sprite.spriteCount.y) * sprite.spriteIndex.y);
+        vertex[2].uv = glm::vec2(float(1.0 / sprite.spriteCount.x) * float(sprite.spriteIndex.x - 1),
+                                 float(1.0 / sprite.spriteCount.y) * sprite.spriteIndex.y);
+        vertex[3].uv = glm::vec2(float(1.0 / sprite.spriteCount.x) * float(sprite.spriteIndex.x - 1),
+                                 float(1.0 / sprite.spriteCount.y) * float(sprite.spriteIndex.y - 1));
 
         vbo->select();
         vbo->subData(sizeof(vertex), vertex, 0);
@@ -46,44 +46,9 @@ void spriteSystem(const std::vector<Entity> &entities, VertexBuffer *vbo, IndexB
         shader->sentMat4("model", modelMatrix);
         shader->sentMat4("view", view);
         shader->sentMat4("proj", proj);
+        textureLibrary.getTexture(sprite.textureName)->select(0);
         Renderer::draw(vbo, ibo, 6);
     }
-}
-
-class Editor
-{
-  public:
-    void init(void *nativeWindow);
-    void loadScene(Scene &scene) { m_scene = &scene; }
-    void update();
-
-  private:
-    Scene *m_scene = nullptr;
-};
-
-void Editor::init(void *nativeWindow)
-{
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-
-    ImGui_ImplGlfw_InitForOpenGL((GLFWwindow *)nativeWindow, true);
-    ImGui_ImplOpenGL3_Init();
-}
-
-void Editor::update()
-{
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-
-    ImGui::NewFrame();
-    ImGui::Begin("entities");
-    ImGui::End();
-
-    ImGui::Begin("properties");
-    ImGui::End();
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 class Sandbox : public Application
@@ -99,6 +64,7 @@ class Sandbox : public Application
     bool newEntityPopup = false;
 
     Scene scene;
+
     void onStart() override
     {
         editor.init(window->getNativeWindow());
@@ -112,8 +78,8 @@ class Sandbox : public Application
         Transform &transform = entity.getComponent<Transform>();
 
         sprite.spriteCount = glm::ivec2(32, 32);
-        sprite.selectedSprite = glm::ivec2(1);
-        sprite.texture = Texture::create(loadImage("res/texture.png"));
+        sprite.spriteIndex = glm::ivec2(1);
+        sprite.textureName = "res/texture.png";
         transform.position = glm::vec3(100, 100, 0);
         transform.scale = glm::vec3(100, 100, 0);
 
@@ -123,6 +89,10 @@ class Sandbox : public Application
         vbo->addLayout(FLOAT3);
         ibo = IndexBuffer::create(sizeof(index), index);
         shader = Shader::create(loadShaderSource("res/shader.vert", "res/shader.frag"));
+
+        scene.textureLibrary.loadTexture("res/texture.png");
+
+        editor.loadScene(scene);
     }
     void onUpdate() override
     {
@@ -133,12 +103,17 @@ class Sandbox : public Application
         projMatrix = glm::ortho(0.f, (float)window->getProperties().size.x, 0.f, (float)window->getProperties().size.y,
                                 0.f, 100.f);
 
-        spriteSystem(scene.getList<Sprite>(), vbo, ibo, shader, viewMatrix, projMatrix);
+        spriteSystem(scene.getList<Sprite>(), vbo, ibo, shader, viewMatrix, projMatrix, scene.textureLibrary);
 
         camera.update();
         editor.update();
     }
-    void onEnd() override {}
+    void onEnd() override
+    {
+    }
 };
 
-Application *createApplication() { return new Sandbox; }
+Application *createApplication()
+{
+    return new Sandbox;
+}

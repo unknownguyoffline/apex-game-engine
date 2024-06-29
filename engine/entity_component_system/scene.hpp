@@ -1,5 +1,6 @@
 #pragma once
 #include "entity.hpp"
+#include "renderer/texture_library.hpp"
 #include <string>
 #include <vector>
 #include <vendor/entt/entt.hpp>
@@ -19,6 +20,7 @@ class Scene
         return list;
     }
     void update();
+    TextureLibrary textureLibrary;
 
   private:
     entt::registry m_registry;

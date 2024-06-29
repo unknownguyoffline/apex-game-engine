@@ -11,22 +11,49 @@ int elementCount[] = {1, 1, 2, 2, 3, 3, 4, 4};
 size_t typeSize[] = {sizeof(float),     sizeof(int),       sizeof(float) * 2, sizeof(float) * 2,
                      sizeof(float) * 3, sizeof(float) * 3, sizeof(float) * 4, sizeof(float) * 4};
 
-VertexBuffer *VertexBuffer::create(size_t size, void *data) { return new OpenglVertexBuffer(size, data); }
+VertexBuffer *VertexBuffer::create(size_t size, void *data)
+{
+    return new OpenglVertexBuffer(size, data);
+}
 
 OpenglVertexBuffer::OpenglVertexBuffer(size_t size, void *data)
 {
-    TRACE("opengl vertex buffer constructor");
+    if (size == 0)
+    {
+        ERROR("OpenglVertexBuffer::constructor [size = 0]");
+    }
+    if (data == nullptr)
+    {
+        ERROR("OpenglVertexBuffer::constructor [data = nullptr]");
+    }
+
     glGenBuffers(1, &m_id);
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
 }
 void OpenglVertexBuffer::setData(size_t size, void *data)
 {
+    if (size == 0)
+    {
+        ERROR("OpenglVertexBuffer::setData [size = 0]");
+    }
+    if (data == nullptr)
+    {
+        ERROR("OpenglVertexBuffer::setData [data = nullptr]");
+    }
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 void OpenglVertexBuffer::subData(size_t size, void *data, size_t offset)
 {
+    if (size == 0)
+    {
+        ERROR("OpenglVertexBuffer::subData [size = 0]");
+    }
+    if (data == nullptr)
+    {
+        ERROR("OpenglVertexBuffer::subData [data = nullptr]");
+    }
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }
@@ -48,4 +75,7 @@ void OpenglVertexBuffer::select()
     }
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
 }
-void OpenglVertexBuffer::deselect() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+void OpenglVertexBuffer::deselect()
+{
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}

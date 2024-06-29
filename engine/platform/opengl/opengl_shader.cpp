@@ -8,9 +8,20 @@ Shader *Shader::create(std::string vertexCode, std::string fragmentCode)
 {
     return new OpenglShader(vertexCode, fragmentCode);
 }
-Shader *Shader::create(const ShaderSource &source) { return new OpenglShader(source.vertexCode, source.fragmentCode); }
+Shader *Shader::create(const ShaderSource &source)
+{
+    return new OpenglShader(source.vertexCode, source.fragmentCode);
+}
 OpenglShader::OpenglShader(const std::string &vertexCode, const std::string &fragmentCode)
 {
+    if (vertexCode.size() == 0)
+    {
+        ERROR("OpenglShader::constructor [vertexCode.size = 0]");
+    }
+    if (fragmentCode.size() == 0)
+    {
+        ERROR("OpenglShader::constructor [fragmentCode.size = 0]");
+    }
     const char *vertexShaderSource = vertexCode.c_str();
     const char *fragmentShaderSource = fragmentCode.c_str();
 
@@ -50,6 +61,23 @@ OpenglShader::OpenglShader(const std::string &vertexCode, const std::string &fra
 }
 int OpenglShader::getLocation(const char *name)
 {
+    std::string n = name;
+
+    for (int i = 0; i < strlen(name); i++)
+    {
+        std::string prohibitedCharacter = " -=*&^%$#@!~(){}[];\'\\/.,\"";
+        for (char ch : n)
+        {
+            for (char c : prohibitedCharacter)
+            {
+                if (ch == c)
+                {
+                    ERROR("OpenglShader::getLocation uniform name must not contain spaces or symbols");
+                }
+            }
+        }
+    }
+
     glUseProgram(m_id);
     int loc = glGetUniformLocation(m_id, name);
     if (loc == -1)
@@ -59,10 +87,19 @@ int OpenglShader::getLocation(const char *name)
     return loc;
 }
 
-void OpenglShader::select() { glUseProgram(m_id); }
-void OpenglShader::deselect() { glUseProgram(0); }
+void OpenglShader::select()
+{
+    glUseProgram(m_id);
+}
+void OpenglShader::deselect()
+{
+    glUseProgram(0);
+}
 
-void OpenglShader::sentInt(const char *name, int value) { glUniform1i(getLocation(name), value); }
+void OpenglShader::sentInt(const char *name, int value)
+{
+    glUniform1i(getLocation(name), value);
+}
 void OpenglShader::sentInt2(const char *name, const glm::ivec2 &value)
 {
     glUniform2i(getLocation(name), value.x, value.y);
@@ -76,7 +113,10 @@ void OpenglShader::sentInt4(const char *name, const glm::ivec4 &value)
     glUniform4i(getLocation(name), value.x, value.y, value.z, value.w);
 }
 
-void OpenglShader::sentFloat(const char *name, float value) { glUniform1f(getLocation(name), value); }
+void OpenglShader::sentFloat(const char *name, float value)
+{
+    glUniform1f(getLocation(name), value);
+}
 void OpenglShader::sentFloat2(const char *name, const glm::vec2 &value)
 {
 

@@ -8,7 +8,6 @@
 struct EntityInfo
 {
     std::string name;
-    bool selected = false;
 };
 
 struct Mesh
@@ -32,6 +31,6 @@ struct Transform
 struct Sprite
 {
     glm::ivec2 spriteCount = glm::ivec2(1);
-    glm::ivec2 selectedSprite = glm::ivec2(1);
-    Texture *texture = nullptr;
+    glm::ivec2 spriteIndex = glm::ivec2(1);
+    std::string textureName;
 };
