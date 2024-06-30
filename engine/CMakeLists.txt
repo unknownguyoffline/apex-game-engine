@@ -5,7 +5,7 @@ project(engine)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-add_subdirectory(vendor/glfw)
+add_subdirectory(vendor)
 
 file(GLOB source
 	"${PROJECT_SOURCE_DIR}/core/*.cpp"

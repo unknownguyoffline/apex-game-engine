@@ -11,7 +11,9 @@ Application::Application()
     if (instance == nullptr)
         instance = this;
     else
+    {
         ERROR("only one instance of application is possible");
+    }
 }
 void Application::run()
 {

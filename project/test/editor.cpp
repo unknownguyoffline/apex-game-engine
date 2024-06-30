@@ -1,11 +1,11 @@
 #include "editor.hpp"
 #include "entity_component_system/component.hpp"
 #include "utility/macro.hpp"
-#include <imgui/backends/imgui_impl_glfw.h>
-#include <imgui/backends/imgui_impl_opengl3.h>
-#include <imgui/imgui.h>
+#include <vendor/imgui/backends/imgui_impl_glfw.h>
+#include <vendor/imgui/backends/imgui_impl_opengl3.h>
+#include <vendor/imgui/imgui.h>
 
-void Editor::init(void *nativeWindow)
+void Editor::initialize(void *nativeWindow)
 {
     if (nativeWindow == nullptr)
     {
@@ -82,7 +82,9 @@ void Editor::update()
             ImGui::DragInt("vertical sprite count", &sprite.spriteCount.y);
             ImGui::SliderInt("horizontal sprite index", &sprite.spriteIndex.x, 1, sprite.spriteCount.x);
             ImGui::SliderInt("vertical sprite index", &sprite.spriteIndex.y, 1, sprite.spriteCount.y);
+            strcpy(path, sprite.textureName.c_str());
             ImGui::InputText("Path", path, 512);
+            sprite.textureName = path;
         }
         if (ImGui::Button("Add Component") || addComponentPopup)
         {
@@ -94,6 +96,10 @@ void Editor::update()
                 addComponentPopup = false;
             }
             ImGui::End();
+        }
+        if (ImGui::Button("Delete"))
+        {
+            selectedEntity.Destroy();
         }
     }
     ImGui::End();

@@ -19,6 +19,7 @@ class Scene
         }
         return list;
     }
+    void DestroyEntity(Entity &entity);
     void update();
     TextureLibrary textureLibrary;
 

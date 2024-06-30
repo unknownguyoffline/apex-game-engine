@@ -4,10 +4,10 @@
 class Editor
 {
   public:
-    void init(void *nativeWindow);
-    void loadScene(Scene &scene)
+    void initialize(void *nativeWindow);
+    void loadScene(Scene *scene)
     {
-        m_scene = &scene;
+        m_scene = scene;
     }
     void update();
 

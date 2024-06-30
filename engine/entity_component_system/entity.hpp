@@ -44,6 +44,11 @@ class Entity
         m_registry = entity.m_registry;
     }
 
+    void Destroy()
+    {
+        m_registry->destroy(m_entity);
+    }
+
   private:
     friend Editor;
     entt::entity m_entity;

@@ -7,7 +7,7 @@ project(app)
 include_directories(${PROJECT_SOURCE_DIR}/../engine/)
 include_directories(/usr/include/imgui)
 include_directories(/usr/include/stb)
-
+include_directories(${PROJECT_SOURCE_DIR}/../engine/vendor/imgui)
 file(GLOB source
 	"${PROJECT_SOURCE_DIR}/test/*.cpp"
 	)
@@ -15,4 +15,4 @@ file(GLOB source
 add_executable(app ${source})
 target_link_libraries(app engine)
 target_link_libraries(app imgui)
-target_link_libraries(app stb)
+target_link_libraries(app nlohmann_json::nlohmann_json)
