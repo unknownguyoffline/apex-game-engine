@@ -14,11 +14,12 @@ void Editor::init(void *nativeWindow)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
-    io.Fonts->AddFontFromFileTTF("/usr/share/fonts/truetype/Consolas.ttf", 24);
+    io.Fonts->AddFontFromFileTTF("/usr/share/fonts/truetype/CONSOLA.TTF", 24);
 
     ImGui_ImplGlfw_InitForOpenGL((GLFWwindow *)nativeWindow, true);
     ImGui_ImplOpenGL3_Init();
     name[0] = 0;
+    path[0] = 0;
 }
 
 void Editor::update()
@@ -81,7 +82,6 @@ void Editor::update()
             ImGui::DragInt("vertical sprite count", &sprite.spriteCount.y);
             ImGui::SliderInt("horizontal sprite index", &sprite.spriteIndex.x, 1, sprite.spriteCount.x);
             ImGui::SliderInt("vertical sprite index", &sprite.spriteIndex.y, 1, sprite.spriteCount.y);
-            char path[512];
             ImGui::InputText("Path", path, 512);
         }
         if (ImGui::Button("Add Component") || addComponentPopup)
