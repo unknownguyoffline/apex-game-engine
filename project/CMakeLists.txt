@@ -7,6 +7,7 @@ project(app)
 include_directories(${PROJECT_SOURCE_DIR}/../engine/)
 include_directories(/usr/include/imgui)
 include_directories(/usr/include/stb)
+include_directories(${PROJECT_SOURCE_DIR}/../engine/vendor/json/include/)
 include_directories(${PROJECT_SOURCE_DIR}/../engine/vendor/imgui)
 file(GLOB source
 	"${PROJECT_SOURCE_DIR}/test/*.cpp"

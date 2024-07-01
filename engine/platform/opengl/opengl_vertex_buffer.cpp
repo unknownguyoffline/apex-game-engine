@@ -22,10 +22,6 @@ OpenglVertexBuffer::OpenglVertexBuffer(size_t size, void *data)
     {
         ERROR("OpenglVertexBuffer::constructor [size = 0]");
     }
-    if (data == nullptr)
-    {
-        ERROR("OpenglVertexBuffer::constructor [data = nullptr]");
-    }
 
     glGenBuffers(1, &m_id);
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
