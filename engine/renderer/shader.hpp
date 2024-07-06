@@ -21,6 +21,10 @@ class Shader
 
     virtual void sentMat4(const char *name, const glm::mat4 &value) = 0;
 
+    virtual ~Shader()
+    {
+    }
+
     static Shader *create(std::string vertexCode, std::string fragmentCode);
     static Shader *create(const ShaderSource &source);
 };

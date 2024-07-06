@@ -31,3 +31,11 @@
 #else
 #define TRACE(...)
 #endif
+
+#define ARG_CHECK(condition, returnValue)                                                                              \
+    if (condition)                                                                                                     \
+    {                                                                                                                  \
+        ERROR(__PRETTY_FUNCTION__);                                                                                    \
+        ERROR(#condition);                                                                                             \
+        return returnValue;                                                                                            \
+    }

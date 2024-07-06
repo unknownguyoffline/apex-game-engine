@@ -4,7 +4,7 @@ set(CMAKE_BUILD_TYPE Debug)
 project(engine)
 
 include_directories(${PROJECT_SOURCE_DIR})
-
+include_directories(${PROJECT_SOURCE_DIR}/vendor/json/include)
 add_subdirectory(vendor)
 
 file(GLOB source

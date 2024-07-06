@@ -1,2 +1,3 @@
-cd project/test
-gdb app -tui
+cd project/circuit
+nemiver app -tui
+

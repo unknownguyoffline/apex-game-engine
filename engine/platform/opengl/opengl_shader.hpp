@@ -3,7 +3,8 @@
 class OpenglShader : public Shader
 {
   public:
-    OpenglShader(const std::string &vertexCode, const std::string &fragmentCode);
+    OpenglShader(const std::string &vertexACode, const std::string &fragmentCode);
+    ~OpenglShader() override;
     void select() override;
     void deselect() override;
 

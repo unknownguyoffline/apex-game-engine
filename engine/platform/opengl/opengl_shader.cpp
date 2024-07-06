@@ -59,20 +59,27 @@ OpenglShader::OpenglShader(const std::string &vertexCode, const std::string &fra
         assert(0);
     }
 }
+OpenglShader::~OpenglShader()
+{
+    glDeleteProgram(m_id);
+}
 int OpenglShader::getLocation(const char *name)
 {
     std::string n = name;
-
+    if (strlen(name) == 0)
+    {
+        ERROR("OpenglShader::getLocation name.size = 0");
+    }
     for (int i = 0; i < strlen(name); i++)
     {
-        std::string prohibitedCharacter = " -=*&^%$#@!~(){}[];\'\\/.,\"";
+        std::string prohibitedCharacter = " -=*&^%$#@!~(){};\'\\/,\"";
         for (char ch : n)
         {
             for (char c : prohibitedCharacter)
             {
                 if (ch == c)
                 {
-                    ERROR("OpenglShader::getLocation uniform name must not contain spaces or symbols");
+                    ERROR("OpenglShader::getLocation uniform name must not contain spaces or symbols [%s]", name);
                 }
             }
         }

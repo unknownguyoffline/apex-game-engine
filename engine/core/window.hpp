@@ -14,6 +14,7 @@ class Window
   public:
     virtual WindowProperties getProperties() const = 0;
     virtual void setProperties(const WindowProperties &properties) = 0;
+    virtual void setTitle(const char *title) = 0;
     virtual void update() = 0;
     virtual void *getNativeWindow() = 0;
     virtual bool shouldClose() const = 0;

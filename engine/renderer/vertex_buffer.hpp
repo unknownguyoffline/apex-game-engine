@@ -23,6 +23,8 @@ class VertexBuffer
 
     virtual void select() = 0;
     virtual void deselect() = 0;
-
+    virtual ~VertexBuffer()
+    {
+    }
     static VertexBuffer *create(size_t size, void *data);
 };

@@ -8,8 +8,11 @@ class RenderCommand
     virtual void clearScreen(const glm::vec4 &color) = 0;
     virtual void drawArray(int count) = 0;
     virtual void drawIndexed(int count) = 0;
+    virtual void drawInstancedIndex(int count, int instanceCount) = 0;
     virtual void setViewport(glm::ivec2 pos, glm::ivec2 size) = 0;
-    virtual ~RenderCommand() {}
+    virtual ~RenderCommand()
+    {
+    }
 
     static RenderCommand *create();
 };

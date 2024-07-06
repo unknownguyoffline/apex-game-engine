@@ -18,38 +18,31 @@ VertexBuffer *VertexBuffer::create(size_t size, void *data)
 
 OpenglVertexBuffer::OpenglVertexBuffer(size_t size, void *data)
 {
-    if (size == 0)
-    {
-        ERROR("OpenglVertexBuffer::constructor [size = 0]");
-    }
+    ARG_CHECK(size == 0, );
 
+    m_size = size;
     glGenBuffers(1, &m_id);
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
 }
+OpenglVertexBuffer::~OpenglVertexBuffer()
+{
+    glDeleteBuffers(1, &m_id);
+}
 void OpenglVertexBuffer::setData(size_t size, void *data)
 {
-    if (size == 0)
-    {
-        ERROR("OpenglVertexBuffer::setData [size = 0]");
-    }
-    if (data == nullptr)
-    {
-        ERROR("OpenglVertexBuffer::setData [data = nullptr]");
-    }
+    ARG_CHECK(size == 0, );
+    ARG_CHECK(m_size < size, );
+    ARG_CHECK(data == nullptr, );
+
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 void OpenglVertexBuffer::subData(size_t size, void *data, size_t offset)
 {
-    if (size == 0)
-    {
-        ERROR("OpenglVertexBuffer::subData [size = 0]");
-    }
-    if (data == nullptr)
-    {
-        ERROR("OpenglVertexBuffer::subData [data = nullptr]");
-    }
+    ARG_CHECK(size == 0, );
+    ARG_CHECK(data == nullptr, );
+    ARG_CHECK(m_size < size + offset, );
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }

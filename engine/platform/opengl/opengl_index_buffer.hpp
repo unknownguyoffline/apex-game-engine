@@ -5,6 +5,7 @@ class OpenglIndexBuffer : public IndexBuffer
 {
   public:
     OpenglIndexBuffer(size_t size, void *data);
+    ~OpenglIndexBuffer() override;
     void setData(size_t size, void *data) override;
     void subData(size_t size, void *data, size_t offset) override;
     void select() override;

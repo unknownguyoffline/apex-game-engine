@@ -5,6 +5,53 @@
 #include <vendor/imgui/backends/imgui_impl_opengl3.h>
 #include <vendor/imgui/imgui.h>
 
+#define COMPONENT_ADD_BUTTON(component, entity)                                                                        \
+    if (ImGui::Button(#component))                                                                                     \
+    {                                                                                                                  \
+        entity.addComponent<component>();                                                                              \
+        addComponentPopup = false;                                                                                     \
+    }
+
+template <typename T> void componentGuiSet(Entity &entity);
+
+template <> void componentGuiSet<Transform>(Entity &entity)
+{
+    if (entity.hasComponent<Transform>())
+    {
+        ImGui::SeparatorText("Transform");
+        Transform &transform = entity.getComponent<Transform>();
+
+        ImGui::DragFloat3("Position", &transform.position.x, 1);
+        ImGui::DragFloat3("Rotation", &transform.rotation.x, 0.1f);
+        ImGui::DragFloat3("Scale", &transform.scale.x, 1);
+    }
+}
+template <> void componentGuiSet<Sprite>(Entity &entity)
+{
+    if (entity.hasComponent<Sprite>())
+    {
+        ImGui::SeparatorText("Sprite");
+        Sprite &sprite = entity.getComponent<Sprite>();
+        ImGui::DragInt("Sprite count X", &sprite.spriteCount.x, 0.1);
+        ImGui::DragInt("Sprite count Y", &sprite.spriteCount.y, 0.1);
+        ImGui::SliderInt("Sprite index X", &sprite.spriteIndex.x, 1, sprite.spriteCount.x);
+        ImGui::SliderInt("Sprite index Y", &sprite.spriteIndex.y, 1, sprite.spriteCount.y);
+        static char path[512];
+        strcpy(path, sprite.textureName.c_str());
+        ImGui::InputText("Path", path, 512);
+        sprite.textureName = path;
+    }
+}
+
+template <> void componentGuiSet<Box>(Entity &entity)
+{
+    ImGui::SeparatorText("Box");
+    if (entity.hasComponent<Box>())
+    {
+        ImGui::ColorPicker4("Color", &entity.getComponent<Box>().color.r);
+    }
+}
+
 void Editor::initialize(void *nativeWindow)
 {
     if (nativeWindow == nullptr)
@@ -63,38 +110,16 @@ void Editor::update()
     if (selectedEntity.m_registry != nullptr)
     {
 
-        if (selectedEntity.hasComponent<Transform>())
-        {
-            Transform &transform = selectedEntity.getComponent<Transform>();
+        componentGuiSet<Transform>(selectedEntity);
+        componentGuiSet<Sprite>(selectedEntity);
+        componentGuiSet<Box>(selectedEntity);
 
-            ImGui::Separator();
-            ImGui::Text("Transform");
-            ImGui::DragFloat3("Position", &transform.position.x, 0.1f);
-            ImGui::DragFloat3("Rotation", &transform.rotation.x, 0.1f);
-            ImGui::DragFloat3("Scale", &transform.scale.x, 0.1f);
-        }
-        if (selectedEntity.hasComponent<Sprite>())
-        {
-            Sprite &sprite = selectedEntity.getComponent<Sprite>();
-            ImGui::Separator();
-            ImGui::Text("Sprite");
-            ImGui::DragInt("horizontal sprite count", &sprite.spriteCount.x);
-            ImGui::DragInt("vertical sprite count", &sprite.spriteCount.y);
-            ImGui::SliderInt("horizontal sprite index", &sprite.spriteIndex.x, 1, sprite.spriteCount.x);
-            ImGui::SliderInt("vertical sprite index", &sprite.spriteIndex.y, 1, sprite.spriteCount.y);
-            strcpy(path, sprite.textureName.c_str());
-            ImGui::InputText("Path", path, 512);
-            sprite.textureName = path;
-        }
         if (ImGui::Button("Add Component") || addComponentPopup)
         {
             addComponentPopup = true;
             ImGui::Begin("Components");
-            if (ImGui::Button("Sprite"))
-            {
-                selectedEntity.addComponent<Sprite>();
-                addComponentPopup = false;
-            }
+            COMPONENT_ADD_BUTTON(Sprite, selectedEntity);
+            COMPONENT_ADD_BUTTON(Box, selectedEntity);
             ImGui::End();
         }
         if (ImGui::Button("Delete"))

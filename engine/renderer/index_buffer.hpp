@@ -10,6 +10,9 @@ class IndexBuffer
 
     virtual void select() = 0;
     virtual void deselect() = 0;
+    virtual ~IndexBuffer()
+    {
+    }
 
     static IndexBuffer *create(size_t size, void *data);
 };
