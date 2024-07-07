@@ -8,13 +8,20 @@
 
 using namespace glm;
 
+struct Sprite
+{
+    std::shared_ptr<Texture> texture;
+    ivec2 spriteCount = ivec2(1);
+    ivec2 spriteIndex = ivec2(0);
+};
+
 class Circuit : public Application
 {
     EditorLayer editorLayer;
     Transform transform;
     Transform cameraTransform;
     Transform boxTransform;
-    bool drawCircle = false;
+    Sprite sprite;
 
   public:
     void onStart() override
@@ -23,7 +30,6 @@ class Circuit : public Application
         editorLayer.addTransformController("player", transform);
         editorLayer.addTransformController("camera", cameraTransform);
         editorLayer.addTransformController("box", boxTransform);
-        editorLayer.addCheckbox("name", drawCircle);
     }
     void onUpdate(float dt) override
     {
@@ -35,6 +41,8 @@ class Circuit : public Application
         Renderer::drawCircle(transform, vec4(0.8, 0.17, 0.18, 1));
         Renderer::drawCircle({transform.position + vec3(0.5), transform.rotation, transform.scale},
                              vec4(0.21, 0.56, 0.42, 1.0));
+
+        Renderer::drawSprite({boxTransform.position - vec3(0.5), boxTransform.rotation, boxTransform.scale}, texture);
         Renderer::endFrame();
     }
     void onEnd() override
