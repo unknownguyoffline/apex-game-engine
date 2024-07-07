@@ -36,7 +36,8 @@ class Renderer
 {
   public:
     static void initialize();
-    static void newFrame(const glm::vec4 &color, glm::ivec2 size);
+    static void startFrame(const glm::vec4 &color, glm::ivec2 size);
+    static void endFrame();
     static void terminate();
     static void draw(std::shared_ptr<VertexBuffer> vbo, int count);
     static void draw(std::shared_ptr<VertexBuffer> vbo, std::shared_ptr<IndexBuffer> ibo, int count);

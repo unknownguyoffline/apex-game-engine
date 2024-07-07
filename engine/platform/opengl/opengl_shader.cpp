@@ -14,14 +14,9 @@ Shader *Shader::create(const ShaderSource &source)
 }
 OpenglShader::OpenglShader(const std::string &vertexCode, const std::string &fragmentCode)
 {
-    if (vertexCode.size() == 0)
-    {
-        ERROR("OpenglShader::constructor [vertexCode.size = 0]");
-    }
-    if (fragmentCode.size() == 0)
-    {
-        ERROR("OpenglShader::constructor [fragmentCode.size = 0]");
-    }
+    ARG_CHECK(vertexCode.size() == 0, );
+    ARG_CHECK(fragmentCode.size() == 0, );
+
     const char *vertexShaderSource = vertexCode.c_str();
     const char *fragmentShaderSource = fragmentCode.c_str();
 
@@ -34,6 +29,7 @@ OpenglShader::OpenglShader(const std::string &vertexCode, const std::string &fra
     glCompileShader(fragmentShader);
 
     m_id = glCreateProgram();
+    glUseProgram(m_id);
     glAttachShader(m_id, vertexShader);
     glAttachShader(m_id, fragmentShader);
     glLinkProgram(m_id);
@@ -66,10 +62,8 @@ OpenglShader::~OpenglShader()
 int OpenglShader::getLocation(const char *name)
 {
     std::string n = name;
-    if (strlen(name) == 0)
-    {
-        ERROR("OpenglShader::getLocation name.size = 0");
-    }
+    ARG_CHECK(strlen(name) == 0, -1);
+
     for (int i = 0; i < strlen(name); i++)
     {
         std::string prohibitedCharacter = " -=*&^%$#@!~(){};\'\\/,\"";
@@ -86,12 +80,9 @@ int OpenglShader::getLocation(const char *name)
     }
 
     glUseProgram(m_id);
-    int loc = glGetUniformLocation(m_id, name);
-    if (loc == -1)
-    {
-        ERROR("uniform not found [%s]", name);
-    }
-    return loc;
+    int uniformLocation = glGetUniformLocation(m_id, name);
+    ARG_CHECK(uniformLocation == -1, -1);
+    return uniformLocation;
 }
 
 void OpenglShader::select()

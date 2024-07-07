@@ -55,6 +55,7 @@ void OpenglVertexBuffer::addLayout(VertexLayoutType type)
 void OpenglVertexBuffer::select()
 {
     size_t offset = 0;
+    glBindBuffer(GL_ARRAY_BUFFER, m_id);
     for (int i = 0; i < m_layouts.size(); i++)
     {
         VertexLayoutType type = m_layouts[i];
@@ -62,7 +63,6 @@ void OpenglVertexBuffer::select()
         glVertexAttribPointer(i, elementCount[type], glType[type], GL_FALSE, m_stride, (void *)offset);
         offset += typeSize[type];
     }
-    glBindBuffer(GL_ARRAY_BUFFER, m_id);
 }
 void OpenglVertexBuffer::deselect()
 {

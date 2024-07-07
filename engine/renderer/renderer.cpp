@@ -67,8 +67,10 @@ void main()
 {
 	fragColor = color;
 })";
-Vertex2 batchVertices[4];
-uint32_t batchIndices[6];
+Vertex2 boxVertices[4];
+uint32_t boxIndices[6];
+Vertex2 circleVertices[4];
+uint32_t circleIndices[6];
 
 void Renderer::initialize()
 {
@@ -91,7 +93,7 @@ void Renderer::initialize()
     circleRenderResource.vertexBuffer->addLayout(FLOAT2);
     circleRenderResource.vertexBuffer->addLayout(FLOAT4);
 }
-void Renderer::newFrame(const glm::vec4 &color, glm::ivec2 size)
+void Renderer::startFrame(const glm::vec4 &color, glm::ivec2 size)
 {
 
     ARG_CHECK(size.x == 0, );
@@ -99,6 +101,11 @@ void Renderer::newFrame(const glm::vec4 &color, glm::ivec2 size)
 
     renderCommand->clearScreen(color);
     renderCommand->setViewport(glm::ivec2(0), size);
+}
+void Renderer::endFrame()
+{
+    renderBox();
+    renderCircle();
 }
 void Renderer::terminate()
 {
@@ -121,28 +128,6 @@ void Renderer::draw(std::shared_ptr<VertexBuffer> vbo, std::shared_ptr<IndexBuff
     renderCommand->drawIndexed(count);
 }
 
-// void Renderer::drawBox(const Transform &transform, const glm::vec4 &color)
-// {
-//     if (color.a == 0.f)
-//     {
-//         WARN("Renderer::drawBox color.a = 0");
-//     }
-//     glm::mat4 model = glm::mat4(1.f);
-//     model = glm::translate(model, transform.position);
-//     model = glm::rotate(model, transform.rotation.x, glm::vec3(1, 0, 0));
-//     model = glm::rotate(model, transform.rotation.y, glm::vec3(0, 1, 0));
-//     model = glm::rotate(model, transform.rotation.z, glm::vec3(0, 0, 1));
-//     model = glm::scale(model, transform.scale);
-
-//     boxShader->select();
-//     boxShader->sentMat4("model", model);
-//     boxShader->sentMat4("view", camera.getView());
-//     boxShader->sentMat4("proj", camera.getProj());
-//     boxShader->sentFloat4("color", color);
-
-//     mesh.draw();
-// }
-
 void Renderer::drawBox(const Transform &transform, const glm::vec4 &color)
 {
     glm::mat4 model = glm::mat4(1.0);
@@ -153,24 +138,26 @@ void Renderer::drawBox(const Transform &transform, const glm::vec4 &color)
     model = glm::rotate(model, transform.rotation.z, glm::vec3(0, 0, 1));
     model = glm::scale(model, transform.scale);
 
-    batchVertices[0] = {model * glm::vec4(0.5, 0.5, 0.0, 1.0), glm::vec2(1, 0), color};
-    batchVertices[1] = {model * glm::vec4(0.5, -0.5, 0.0, 1.0), glm::vec2(1, 1), color};
-    batchVertices[2] = {model * glm::vec4(-0.5, -0.5, 0.0, 1.0), glm::vec2(0, 1), color};
-    batchVertices[3] = {model * glm::vec4(-0.5, 0.5, 0.0, 1.0), glm::vec2(0, 0), color};
+    boxVertices[0] = {model * glm::vec4(0.5, 0.5, 0.0, 1.0), glm::vec2(1, 0), color};
+    boxVertices[1] = {model * glm::vec4(0.5, -0.5, 0.0, 1.0), glm::vec2(1, 1), color};
+    boxVertices[2] = {model * glm::vec4(-0.5, -0.5, 0.0, 1.0), glm::vec2(0, 1), color};
+    boxVertices[3] = {model * glm::vec4(-0.5, 0.5, 0.0, 1.0), glm::vec2(0, 0), color};
 
-    batchIndices[0] = 2 + (4 * boxCount);
-    batchIndices[1] = 1 + (4 * boxCount);
-    batchIndices[2] = 0 + (4 * boxCount);
-    batchIndices[3] = 0 + (4 * boxCount);
-    batchIndices[4] = 3 + (4 * boxCount);
-    batchIndices[5] = 2 + (4 * boxCount);
+    boxIndices[0] = 2 + (4 * boxCount);
+    boxIndices[1] = 1 + (4 * boxCount);
+    boxIndices[2] = 0 + (4 * boxCount);
+    boxIndices[3] = 0 + (4 * boxCount);
+    boxIndices[4] = 3 + (4 * boxCount);
+    boxIndices[5] = 2 + (4 * boxCount);
 
-    boxRenderResource.vertexBuffer->subData(sizeof(Vertex2) * 4, batchVertices, sizeof(Vertex2) * 4 * boxCount);
-    boxRenderResource.indexBuffer->subData(sizeof(uint32_t) * 6, batchIndices, sizeof(uint32_t) * 6 * boxCount);
+    boxRenderResource.vertexBuffer->select();
+    boxRenderResource.vertexBuffer->subData(sizeof(Vertex2) * 4, boxVertices, sizeof(Vertex2) * 4 * boxCount);
+    boxRenderResource.indexBuffer->select();
+    boxRenderResource.indexBuffer->subData(sizeof(uint32_t) * 6, boxIndices, sizeof(uint32_t) * 6 * boxCount);
 
+    boxCount++;
     if (boxCount > 1000)
         renderBox();
-    boxCount++;
 }
 
 void Renderer::drawCircle(const Transform &transform, const glm::vec4 &color)
@@ -183,54 +170,64 @@ void Renderer::drawCircle(const Transform &transform, const glm::vec4 &color)
     model = glm::rotate(model, transform.rotation.z, glm::vec3(0, 0, 1));
     model = glm::scale(model, transform.scale);
 
-    batchVertices[0] = {model * glm::vec4(0.5, 0.5, 0.0, 1.0), glm::vec2(1, 0), color};
-    batchVertices[1] = {model * glm::vec4(0.5, -0.5, 0.0, 1.0), glm::vec2(1, 1), color};
-    batchVertices[2] = {model * glm::vec4(-0.5, -0.5, 0.0, 1.0), glm::vec2(0, 1), color};
-    batchVertices[3] = {model * glm::vec4(-0.5, 0.5, 0.0, 1.0), glm::vec2(0, 0), color};
+    circleVertices[0] = {model * glm::vec4(0.5, 0.5, 0.0, 1.0), glm::vec2(1, 0), color};
+    circleVertices[1] = {model * glm::vec4(0.5, -0.5, 0.0, 1.0), glm::vec2(1, 1), color};
+    circleVertices[2] = {model * glm::vec4(-0.5, -0.5, 0.0, 1.0), glm::vec2(0, 1), color};
+    circleVertices[3] = {model * glm::vec4(-0.5, 0.5, 0.0, 1.0), glm::vec2(0, 0), color};
 
-    batchIndices[0] = 2 + (4 * circleCount);
-    batchIndices[1] = 1 + (4 * circleCount);
-    batchIndices[2] = 0 + (4 * circleCount);
-    batchIndices[3] = 0 + (4 * circleCount);
-    batchIndices[4] = 3 + (4 * circleCount);
-    batchIndices[5] = 2 + (4 * circleCount);
+    circleIndices[0] = 2 + (4 * circleCount);
+    circleIndices[1] = 1 + (4 * circleCount);
+    circleIndices[2] = 0 + (4 * circleCount);
+    circleIndices[3] = 0 + (4 * circleCount);
+    circleIndices[4] = 3 + (4 * circleCount);
+    circleIndices[5] = 2 + (4 * circleCount);
 
-    circleRenderResource.vertexBuffer->subData(sizeof(Vertex2) * 4, batchVertices, sizeof(Vertex2) * 4 * circleCount);
-    circleRenderResource.indexBuffer->subData(sizeof(uint32_t) * 6, batchIndices, sizeof(uint32_t) * 6 * circleCount);
+    circleRenderResource.vertexBuffer->select();
+    circleRenderResource.vertexBuffer->subData(sizeof(Vertex2) * 4, circleVertices, sizeof(Vertex2) * 4 * circleCount);
+    circleRenderResource.indexBuffer->select();
+    circleRenderResource.indexBuffer->subData(sizeof(uint32_t) * 6, circleIndices, sizeof(uint32_t) * 6 * circleCount);
 
+    circleCount++;
     if (circleCount > 1000)
         renderCircle();
-    circleCount++;
 }
 void Renderer::renderBox()
 {
+    if (boxCount == 0)
+        return;
     glm::mat4 view = camera.getView();
     glm::mat4 proj = camera.getProj();
 
-    boxRenderResource.vertexBuffer->select();
-    boxRenderResource.indexBuffer->select();
     boxRenderResource.shader->select();
     boxRenderResource.shader->sentMat4("view", view);
     boxRenderResource.shader->sentMat4("proj", proj);
 
-    renderCommand->drawIndexed(boxCount * 6);
+    boxRenderResource.vertexBuffer->select();
+    boxRenderResource.indexBuffer->select();
+
+    // renderCommand->drawIndexed(boxCount * 6);
+    Renderer::draw(boxRenderResource.vertexBuffer, boxRenderResource.indexBuffer, boxCount * 6);
 
     boxCount = 0;
 }
 
 void Renderer::renderCircle()
 {
+    if (circleCount == 0)
+        return;
 
     glm::mat4 view = camera.getView();
     glm::mat4 proj = camera.getProj();
 
-    circleRenderResource.vertexBuffer->select();
-    circleRenderResource.indexBuffer->select();
     circleRenderResource.shader->select();
     circleRenderResource.shader->sentMat4("view", view);
     circleRenderResource.shader->sentMat4("proj", proj);
 
-    renderCommand->drawIndexed(circleCount * 6);
+    // circleRenderResource.vertexBuffer->select();
+    // circleRenderResource.indexBuffer->select();
+
+    // renderCommand->drawIndexed(circleCount * 6);
+    Renderer::draw(circleRenderResource.vertexBuffer, circleRenderResource.indexBuffer, circleCount * 6);
 
     circleCount = 0;
 }

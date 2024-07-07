@@ -18,6 +18,10 @@ class LinuxWindow : public Window
     }
     void update() override;
     bool shouldClose() const override;
+    float getAspectRation() const override
+    {
+        return float(m_properties.size.x) / float(m_properties.size.y);
+    }
 
   private:
     GLFWwindow *m_window = nullptr;

@@ -18,5 +18,6 @@ class Window
     virtual void update() = 0;
     virtual void *getNativeWindow() = 0;
     virtual bool shouldClose() const = 0;
+    virtual float getAspectRation() const = 0;
     static Window *create(const WindowProperties &properties);
 };
