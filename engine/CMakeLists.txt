@@ -20,4 +20,4 @@ file(GLOB source
 add_library(engine STATIC ${source})
 target_link_libraries(engine glfw)
 target_link_libraries(engine GL)
-target_link_libraries(engine SDL_image)
+target_link_libraries(engine stb_image)

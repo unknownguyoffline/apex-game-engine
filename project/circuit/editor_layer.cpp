@@ -11,8 +11,13 @@ void EditorLayer::onAttach()
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init();
-}
 
+    renderUiCallback = std::bind(&EditorLayer::defaultRenderUi, this);
+}
+void EditorLayer::defaultRenderUi()
+{
+    ImGui::Text("no render up callback set");
+}
 void EditorLayer::onUpdate()
 {
     glfwMakeContextCurrent(window);
@@ -25,19 +30,7 @@ void EditorLayer::onUpdate()
     ImGui::SetNextWindowPos({0, 0});
     ImGui::SetNextWindowSize({float(windowSize.x), float(windowSize.y)});
     ImGui::Begin("window");
-    for (int i = 0; i < transformControllers.size(); i++)
-    {
-        ImGui::PushID(i);
-        ImGui::SeparatorText(transformControllers[i].name.c_str());
-        ImGui::DragFloat3("Position", &transformControllers[i].transform->position.x, 0.05f);
-        ImGui::DragFloat3("Rotation", &transformControllers[i].transform->rotation.x, 0.05f);
-        ImGui::DragFloat3("Scale", &transformControllers[i].transform->scale.x, 0.05f);
-        ImGui::PopID();
-    }
-    for (int i = 0; i < checkboxes.size(); i++)
-    {
-        ImGui::Checkbox(checkboxes[i].name.c_str(), checkboxes[i].value);
-    }
+    renderUiCallback();
     ImGui::End();
 
     ImGui::Render();
@@ -56,15 +49,31 @@ void EditorLayer::onDetach()
     glfwDestroyWindow(window);
 }
 
-void EditorLayer::addTransformController(const char *name, Transform &transform)
+void EditorLayer::transformController(const char *name, Transform &transform)
 {
-    transformControllers.push_back({name, &transform});
+    ImGui::PushID(name);
+    ImGui::SeparatorText(name);
+    ImGui::DragFloat3("Position", &transform.position.x);
+    ImGui::DragFloat3("Rotation", &transform.rotation.x);
+    ImGui::DragFloat3("Scale", &transform.scale.x);
+    ImGui::PopID();
 }
 
-void EditorLayer::addCheckbox(const char *name, bool &value)
+void EditorLayer::checkBox(const char *name, bool &value)
 {
-    CheckboxInformation info;
-    info.name = name;
-    info.value = &value;
-    checkboxes.push_back(info);
+    ImGui::Checkbox(name, &value);
+}
+void EditorLayer::drag(const char *name, int &value)
+{
+    ImGui::DragInt(name, &value);
+}
+
+void EditorLayer::drag(const char *name, glm::ivec2 &value)
+{
+    ImGui::DragInt2(name, &value.x);
+}
+
+void EditorLayer::slider(const char *name, int &value, int min, int max)
+{
+    ImGui::SliderInt(name, &value, min, max);
 }

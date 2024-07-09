@@ -1,16 +1,12 @@
 #include "image.hpp"
 #include "utility/macro.hpp"
-#include <SDL/SDL_image.h>
+#include "vendor/stb/stb_image.h"
 #include <stdio.h>
 
 Image loadImage(const char *path)
 {
-    FILE *fp = fopen(path, "r");
-    if (fp == NULL)
-    {
-        ERROR("image file not found: [%s]", path);
-    }
-    IMG_Init(IMG_INIT_PNG);
-    SDL_Surface *surface = IMG_Load(path);
-    return {(unsigned char *)surface->pixels, glm::ivec2(surface->w, surface->h)};
+    ARG_CHECK(fopen(path, "r") == NULL, {});
+    Image image;
+    image.data = stbi_load(path, &image.size.x, &image.size.y, &image.channels, 4);
+    return image;
 }

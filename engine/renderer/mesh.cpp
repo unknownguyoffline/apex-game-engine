@@ -1,6 +1,6 @@
 #include "mesh.hpp"
+#include "core/application.hpp"
 #include "renderer.hpp"
-
 void Mesh::update()
 {
     m_vertexBuffer.reset(VertexBuffer::create(sizeof(Vertex) * vertices.size(), vertices.data()));
@@ -12,5 +12,5 @@ void Mesh::update()
 
 void Mesh::draw()
 {
-    Renderer::draw(m_vertexBuffer, m_indexBuffer, indices.size());
+    Application::get()->renderer2D.draw(m_vertexBuffer, m_indexBuffer, indices.size());
 }

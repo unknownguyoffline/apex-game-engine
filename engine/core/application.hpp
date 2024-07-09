@@ -1,5 +1,6 @@
 #pragma once
 #include "core/layer.hpp"
+#include "renderer/renderer.hpp"
 #include "window.hpp"
 
 class Application
@@ -27,6 +28,7 @@ class Application
 
     Window *window = nullptr;
     LayerStack layerStack;
+    Renderer2D renderer2D;
 
   private:
     static Application *instance;

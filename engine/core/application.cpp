@@ -25,7 +25,7 @@ void Application::run()
     windowProperties.title = "engine";
     window = Window::create(windowProperties);
 
-    Renderer::initialize();
+    renderer2D.initialize();
 
     onStart();
     Timer deltaTimer;
@@ -39,6 +39,6 @@ void Application::run()
         deltaTimer.end();
     }
     onEnd();
-    Renderer::terminate();
+    renderer2D.terminate();
     platformTerminate();
 }

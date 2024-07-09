@@ -9,7 +9,6 @@ Project Description
 - [ ] ecs  
 - [ ] input  
 - [ ] multi window support  
-- [ ] draw sprite  
 - [ ] 3d rendering  
 
 ### In Progress
@@ -17,4 +16,5 @@ Project Description
 
 ### Done ✓
 
+- [x] draw sprite  
 

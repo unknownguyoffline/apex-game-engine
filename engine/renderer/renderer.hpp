@@ -18,46 +18,41 @@ struct CircleInfo
     glm::vec4 color = glm::vec4(0);
 };
 
-struct Vertex2
-{
-    glm::vec4 position;
-    glm::vec2 uv;
-    glm::vec4 color;
-};
-
-struct RenderResource
+struct RenderData
 {
     std::shared_ptr<VertexBuffer> vertexBuffer;
     std::shared_ptr<IndexBuffer> indexBuffer;
     std::shared_ptr<Shader> shader;
 };
 
-class Renderer
+class Renderer2D
 {
   public:
-    static void initialize();
-    static void startFrame(const glm::vec4 &color, glm::ivec2 size);
-    static void endFrame();
-    static void terminate();
-    static void draw(std::shared_ptr<VertexBuffer> vbo, int count);
-    static void draw(std::shared_ptr<VertexBuffer> vbo, std::shared_ptr<IndexBuffer> ibo, int count);
-    static void drawBox(const Transform &transform, const glm::vec4 &color);
-    static void drawCircle(const Transform &transform, const glm::vec4 &color);
-    static Camera &getCamera()
+    void initialize();
+    void startFrame(const glm::vec4 &color, glm::ivec2 size);
+    void endFrame();
+    void terminate();
+    void draw(std::shared_ptr<VertexBuffer> vbo, int count);
+    void draw(std::shared_ptr<VertexBuffer> vbo, std::shared_ptr<IndexBuffer> ibo, int count);
+    void drawBox(const Transform &transform, const glm::vec4 &color);
+    void drawCircle(const Transform &transform, const glm::vec4 &color);
+    void drawSprite(const Transform &transform, const Sprite &sprite);
+    Camera &getCamera()
     {
         return camera;
     }
 
-    static void renderBox();
-    static void renderCircle();
+    void renderBox();
+    void renderCircle();
 
   private:
-    static uint32_t boxCount;
-    static uint32_t circleCount;
+    uint32_t boxCount = 0;
+    uint32_t circleCount = 0;
 
-    static Camera camera;
-    static RenderCommand *renderCommand;
+    Camera camera;
+    RenderCommand *renderCommand = nullptr;
 
-    static RenderResource boxRenderResource;
-    static RenderResource circleRenderResource;
+    RenderData boxData;
+    RenderData circleData;
+    RenderData spriteData;
 };

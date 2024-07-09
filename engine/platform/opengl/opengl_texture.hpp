@@ -7,6 +7,7 @@ class OpenglTexture : public Texture
     OpenglTexture(const Image &image);
     void select(int slot) override;
     void deselect() override;
+    virtual ~OpenglTexture();
 
   private:
     uint32_t m_id = 0;

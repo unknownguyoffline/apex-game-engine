@@ -7,6 +7,8 @@ class Texture
   public:
     virtual void select(int slot) = 0;
     virtual void deselect() = 0;
-
+    virtual ~Texture()
+    {
+    }
     static Texture *create(const Image &image);
 };
