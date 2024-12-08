@@ -1,6 +1,7 @@
 build/
 .cache/
 .vscode/
+engine/vendor/glm111/
 compile
 compileAndRun
 debugRun
