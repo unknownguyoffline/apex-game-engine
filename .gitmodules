@@ -1,0 +1,3 @@
+[submodule "glfw"]
+	path = engine/vendor/glfw
+	url = https://github.com/glfw/glfw.git

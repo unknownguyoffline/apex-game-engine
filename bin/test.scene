@@ -1,0 +1,167 @@
+{
+    "entity0": {
+        "EditorPropertyComponent": {
+            "name": "player"
+        },
+        "SpriteComponent": {
+            "count": [
+                10,
+                1
+            ],
+            "index": [
+                3785,
+                0
+            ],
+            "texturePath": "Assets/Textures/FreeKnight_v1/Colour1/Outline/120x80_PNGSheets/_Idle.png"
+        },
+        "TransformComponent": {
+            "position": [
+                530.0,
+                106.0,
+                0.10000000149011612
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                600.0,
+                400.0,
+                1.0
+            ]
+        }
+    },
+    "entity1": {
+        "EditorPropertyComponent": {
+            "name": "background"
+        },
+        "SpriteComponent": {
+            "count": [
+                1,
+                1
+            ],
+            "index": [
+                0,
+                0
+            ],
+            "texturePath": "Assets/Textures/background.jpeg"
+        },
+        "TransformComponent": {
+            "position": [
+                379.0,
+                293.0,
+                -0.10000000149011612
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                100.0,
+                100.0,
+                1.0
+            ]
+        }
+    },
+    "entity2": {
+        "EditorPropertyComponent": {
+            "name": "head"
+        },
+        "SpriteComponent": {
+            "count": [
+                1,
+                1
+            ],
+            "index": [
+                0,
+                0
+            ],
+            "texturePath": "Assets/Textures/head_up.png"
+        },
+        "TransformComponent": {
+            "position": [
+                31.0,
+                150.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                50.0,
+                50.0,
+                1.0
+            ]
+        }
+    },
+    "entity3": {
+        "EditorPropertyComponent": {
+            "name": "head_down"
+        },
+        "SpriteComponent": {
+            "count": [
+                1,
+                1
+            ],
+            "index": [
+                0,
+                0
+            ],
+            "texturePath": "Assets/Textures/head_down.png"
+        },
+        "TransformComponent": {
+            "position": [
+                100.0,
+                100.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                100.0,
+                100.0,
+                1.0
+            ]
+        }
+    },
+    "entity4": {
+        "EditorPropertyComponent": {
+            "name": "apple"
+        },
+        "SpriteComponent": {
+            "count": [
+                1,
+                1
+            ],
+            "index": [
+                0,
+                0
+            ],
+            "texturePath": "Assets/Textures/apple.png"
+        },
+        "TransformComponent": {
+            "position": [
+                601.0,
+                100.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                180.0
+            ],
+            "scale": [
+                50.0,
+                50.0,
+                1.0
+            ]
+        }
+    }
+}
