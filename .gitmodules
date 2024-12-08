@@ -7,3 +7,6 @@
 [submodule "engine/vendor/glfw"]
 	path = engine/vendor/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "engine/vendor/bzip2"]
+	path = engine/vendor/bzip2
+	url = https://github.com/libarchive/bzip2.git
